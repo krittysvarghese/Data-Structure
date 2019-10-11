@@ -1,126 +1,147 @@
 #include<stdio.h>
 #include<stdlib.h>
-struct node
+ struct node
 {
-	int cof;
-	int exp;
-	struct node* next;
-};
-struct node* insert(int n,struct node* head)
+ int coeff;
+ int exp;
+ struct node*link;
+}p,q,r;
+struct node *phead=NULL;
+struct node *qhead=NULL;
+struct node *rhead=NULL;
+void MULTIPLICATION()
 {
-	struct node* newnode;
-	newnode=(struct node*)malloc(sizeof(struct node));
-	struct node* ptr;
-	int d;
-	printf("Enter the co-efficicent of x^%d : ",n);
-	scanf("%d",&d);
-	newnode->cof=d;
-	newnode->exp=n;
-	newnode->next=NULL;
-	head=newnode;
-	ptr=head;	
-	for(int i=n-1;i>=0;i--)
-	{
-		printf("Enter the co-efficient of x^%d : ",i);
-		scanf("%d",&d);
-		if(d!=0)
-		{
-			newnode=(struct node*)malloc(sizeof(struct node));
-			ptr->next=newnode;
-			ptr=newnode;			
-			newnode->cof=d;
-			newnode->exp=i;
-			newnode->next=NULL;
-		}
- 	}
-	return head;
-	
+ struct node*pptr,*qptr,*rptr,*temp,*temp1,*temp2,*newnode,*t;
+ pptr=phead;
+ qptr=qhead;
+ newnode=(struct node*)malloc(sizeof(struct node));
+ rhead=newnode;
+ rptr=rhead;
+ while(pptr!=NULL)
+ {
+  qptr=qhead;
+  while(qptr!=NULL)
+   {
+   newnode=(struct node*)malloc(sizeof(struct node));
+   newnode->coeff=pptr->coeff*qptr->coeff;
+   newnode->exp=pptr->exp+qptr->exp;
+   newnode->link=NULL;
+   rptr->link=newnode;
+   rptr=newnode;
+   qptr=qptr->link;
+   }
+ pptr=pptr->link;
+ }
+ t=rhead;
+ rhead=rhead->link;
+ free(t);
+ temp=rhead;
+ while(temp!=NULL)
+ {
+  temp1=temp->link;
+  temp2=temp;
+  while(temp1!=NULL)
+  {
+   if(temp->exp==temp1->exp)
+    {
+     temp->coeff=temp->coeff+temp1->coeff;
+     temp2->link=temp1->link;
+     free(temp1);
+     temp1=temp2->link;
+    }
+   else
+    {
+    temp2=temp2->link;
+    temp1=temp2->link;
+    }
+  }
+  temp=temp->link;
+ }
 }
-struct node* polymul(struct node* phead,struct node* qhead)
+     
+void traverse(struct node*head)
 {
-	int k=1;
-	struct node *rhead,*shead,*pptr,*qptr,*rptr,*sptr,*tptr,*newnode;
-	pptr=phead;
-	qptr=qhead;
-	while(pptr!=NULL)
-	{
-		qptr=qhead;
-		while(qptr!=NULL)
-		{
-			newnode=(struct node*)malloc(sizeof(struct node));
-			newnode->cof=pptr->cof * qptr->cof;
-			newnode->exp=pptr->exp + qptr->exp;
-			newnode->next=NULL; 	
-			if(k==1)
-			{
-				k++;
-				shead=newnode;
-				sptr=shead;
-				qptr=qptr->next;
-			}
-			else
-			{	
-				sptr->next=newnode;
-				sptr=newnode;
-				qptr=qptr->next;
-			}
-		}
-		pptr=pptr->next;
-	}
-	k=shead->exp;
-	newnode=(struct node*)malloc(sizeof(struct node));
-	newnode->cof=shead->cof;
-	newnode->exp=shead->exp;
-	newnode->next=NULL;
-	rhead=newnode;
-	rptr=rhead;
-	while((--k)!=-1)
-	{
-		int sum=0;
-		newnode=(struct node*)malloc(sizeof(struct node));		
-		rptr->next=newnode;
-		rptr=newnode;
-		sptr=shead->next;
-		while(sptr!=NULL)
-		{
-			if(sptr->exp == k)
-				sum=sum+ sptr->cof;
-			sptr=sptr->next;
-		}
-		rptr->cof=sum;
-		rptr->exp=k;
-		rptr->next=NULL;
-	}
-	return rhead;
+ struct node *ptr;
+ if(head==NULL)
+   printf("\nList is empty" );
+ else
+ {
+ ptr=head;
+ while(ptr!=NULL)
+  {
+    if(ptr->link==NULL)
+       printf("%dx^%d",ptr->coeff,ptr->exp);
+    else
+       printf("%dx^%d+",ptr->coeff,ptr->exp);
+    ptr=ptr->link;
+  }
+ }
+ 
+} 
+
+int main(void)
+{
+ int x,d1,d2,n,m;
+ struct node*pptr,*qptr;
+ printf("\nEnter the degree of 1st polynomial: ");
+ scanf("%d",&d1);
+ for(int i=d1;i>=0;i--)
+{
+ struct node*newnode;
+ newnode=(struct node*)malloc(sizeof(struct node));
+ printf("\nEnter coefficient of x^%d: ",i); 
+ scanf("%d",&n);
+ if(n==0)
+  continue;
+ else
+{
+ newnode->coeff=n;
+ newnode->exp=i;
+ newnode->link=NULL;
+ if(phead==NULL){
+  phead=newnode;
+  pptr=phead;
+ }
+ else
+ {
+  pptr->link=newnode;
+  pptr=newnode;
+ }
 }
-void traverse(struct node* rhead)
+}
+traverse(phead);
+printf("\nEnter the degree of 2nd polynomial: ");
+scanf("%d",&d2);
+for(int i=d2;i>=0;i--)
 {
-	struct node* rptr;
-	rptr=rhead;
-	while(rptr->next!=NULL)
-	{
-		printf("%dx^%d + ",rptr->cof,rptr->exp);
-		rptr=rptr->next;
-	}
-	printf("%dx^%d\n",rptr->cof,rptr->exp);
-}	
-int main()
+ struct node*newnode;
+ newnode=(struct node*)malloc(sizeof(struct node));
+ printf("\nEnter coefficient of x^%d: ",i); 
+ scanf("%d",&m);
+ if(n==0)
+  continue;
+ else
 {
-	struct node* phead;
-	struct node* qhead;
-	struct node* rhead;		
-	int n;
-	printf("Enter the degree of the polynomial 1 : ");
-	scanf("%d",&n);
-	phead=insert(n,phead);
-	traverse(phead);
-	printf("\nEnter the degree of the polynomial 2 : ");
-	scanf("%d",&n);
-	qhead=insert(n,qhead);	
-	traverse(qhead);
-	printf("\n");
-	printf("\n Result: \n");
-	rhead=polymul(phead,qhead);
-	traverse(rhead);
+ newnode->coeff=m;
+ newnode->exp=i;
+ newnode->link=NULL;
+ if(qhead==NULL){
+  qhead=newnode;
+  qptr=qhead;
+ }
+ else
+  {
+  qptr->link=newnode;
+  qptr=newnode;
+  }
+}
+}
+traverse(qhead);
+MULTIPLICATION();
+printf("\nResult: \n");
+traverse(rhead);
+free(phead);
+free(qhead);
+free(rhead);
 }
 
